@@ -1,5 +1,14 @@
 package one.expressdev.testing.mobile_development
 
+import android.util.Log
+import java.util.Properties
+import javax.mail.Message
+import javax.mail.Session
+import javax.mail.Transport
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeMessage
+
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 
@@ -8,14 +17,11 @@ class Utils {
         var scale: Float = 1.5f;
         scale = if (elementType == "button") {
             1.6f
-        }
-        else if(elementType == "field"){
+        } else if (elementType == "field") {
             1.1f
-        }
-        else if(elementType == "title"){
+        } else if (elementType == "title") {
             1.2f
-        }
-        else{
+        } else {
             1.5f
         }
         return scale;
@@ -52,5 +58,9 @@ class Utils {
         // If all checks pass, the password is considered secure
         return Pair(true, "")
     }
+
+
+
+
 
 }
