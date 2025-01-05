@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- res/values-night/colors.xml (for dark theme) -->
+<resources>
+    <color name="primaryColor">#000000</color>
+    <color name="primaryDarkColor">#000000</color>
+    <color name="secondaryColor">#FFFFFF</color>
+    <color name="backgroundColor">#FFFFFF</color>
+    <color name="textColorPrimary">#000000</color>
+    <color name="textColorSecondary">#000000</color>
+</resources>
+
