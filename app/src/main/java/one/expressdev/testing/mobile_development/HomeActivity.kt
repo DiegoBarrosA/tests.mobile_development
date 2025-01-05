@@ -93,10 +93,10 @@ fun MostrarUsuarios() {
 
     ) {
         Text(text = "Usuarios registrados: ")
-        for (usuario in users) {
+        for (user in users) {
             Log.d(
                 "HomeActivity",
-                "Usuario: ${usuario.nombre} ${usuario.apellidos} ${usuario.correo}}"
+                "Usuario: ${user.first_name} ${user.last_name} ${user.email} ${user.password}}"
             )
         }
     }

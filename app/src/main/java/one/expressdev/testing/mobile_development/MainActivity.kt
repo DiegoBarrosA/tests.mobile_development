@@ -6,22 +6,41 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import one.expressdev.testing.mobile_development.modelo.User
 import one.expressdev.testing.mobile_development.ui.theme.Testsmobile_developmentTheme
+import java.nio.file.WatchEvent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,77 +48,96 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Testsmobile_developmentTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android", modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                MainMenu()
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    val context = LocalContext.current;
-    Column {
-        Text(
-            text = "Hello, MainActivity $name!", modifier = modifier
-        )
-        Button(
-            onClick = {
-                val intent = Intent(context, HomeActivity::class.java)
-                context.startActivity(intent)
-            }, modifier = Modifier.padding(16.dp)
-        ) {
-            Text(text = "Ir a HomeActivity")
-        }
-        FormularioUsuario()
-    }
-}
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    Testsmobile_developmentTheme {
-        FormularioUsuario()
-    }
+fun MainMenu() {
+    val context = LocalContext.current
 
-}
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
-@Composable
-fun FormularioUsuario() {
-    val nombres = remember { mutableStateOf("") }
-    val apellidos = remember { mutableStateOf("") }
-    val correo = remember { mutableStateOf("") }
-    val context = LocalContext.current;
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            MediumTopAppBar(
+                title = {
+                    Text(
+                        "Main Menu",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+                        modifier = Modifier
+                            .scale(Utils().getScale("title"))
+                            .padding(start = 30.dp)
+
+                    )
+                },
+
+                scrollBehavior = scrollBehavior
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Button(
+                    onClick = {
+                        val intent = Intent(context, SingUpActivity::class.java)
+                        context.startActivity(intent)
+                    }, modifier = Modifier
+                        .scale(
+                            Utils().getScale("button")
+
+                        )
+
+                        .padding(20.dp)
+                ) {
+                    Text(
+                        "Sign up",
+                        modifier = Modifier.scale(Utils().getScale("text"))
+
+                    )
 
 
-    ) {
-        TextField(
-            value = nombres.value, onValueChange = { nombres.value = it },
-            label = { Text("Nombres") }
-        )
-        TextField(
-            value = apellidos.value, onValueChange = { apellidos.value = it },
-            label = { Text("Apellidos") }
-        )
-        TextField(
-            value = correo.value, onValueChange = { correo.value = it },
-            label = { Text("Correo") }
-        )
-        Button(onClick = {
-            val user = User(nombres.value, apellidos.value, correo.value)
-            User.addUser(user)
-            val intent = Intent(context, LoginActivity::class.java)
-            context.startActivity(intent)
-        }) { Text("Agregar Usuario") }
+                }
+                Button(
+                    onClick = {
+                        val intent = Intent(context, LoginActivity::class.java)
+                        context.startActivity(intent)
+                    }, modifier = Modifier
+                        .scale(
+                            Utils().getScale("button")
+                        )
+
+                        .padding(20.dp)
+                ) {
+                    Text(
+                        "Log in",
+                        modifier = Modifier.scale(Utils().getScale("text"))
+                    )
+                }
+
+
+            }
+        }
     }
 
 }
