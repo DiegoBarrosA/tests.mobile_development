@@ -40,6 +40,8 @@ android {
 }
 
 dependencies {
+    implementation ("xmlpull:xmlpull:1.1.3.1")
+
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation("org.json:json:20210307")
     implementation("com.sun.mail:javax.mail:1.6.2")

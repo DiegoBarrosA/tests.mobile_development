@@ -4,4 +4,5 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_sing_up">SingUpActivity</string>
     <string name="title_activity_email">EmailActivity</string>
+    <string name="title_activity_reader">reader</string>
 </resources>
