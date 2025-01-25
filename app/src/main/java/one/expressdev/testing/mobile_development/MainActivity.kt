@@ -42,6 +42,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import one.expressdev.testing.mobile_development.modelo.User
+import one.expressdev.testing.mobile_development.rss.ArticleList
 import one.expressdev.testing.mobile_development.ui.theme.Testsmobile_developmentTheme
 import java.nio.file.WatchEvent
 
@@ -108,13 +109,10 @@ fun MainMenu() {
 
                 Button(
                     onClick = {
-                        val intent = Intent(context, SingUpActivity::class.java)
+                        val intent = Intent(context, ArticleList::class.java)
                         context.startActivity(intent)
 
-                        (context as? ComponentActivity)?.lifecycleScope?.launch {
-                            val userData = one.expressdev.testing.mobile_development.rss.loadRssFeed() // Call the suspend function
-                            println(userData) // Handle the result (e.g., update UI)
-                        }
+
                     }, modifier = Modifier
                         .scale(
                             Utils().getScale("button")

@@ -5,4 +5,5 @@
     <string name="title_activity_sing_up">SingUpActivity</string>
     <string name="title_activity_email">EmailActivity</string>
     <string name="title_activity_reader">reader</string>
+    <string name="title_activity_article_list">ArticleList</string>
 </resources>

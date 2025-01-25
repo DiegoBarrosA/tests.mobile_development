@@ -68,18 +68,13 @@ class RssFeedParser {
 }
 
 
-fun main() {
+fun main(): List<RssEntry> {
     val xmlString = ""
     val parser = RssFeedParser()
     val entries = parser.parseRssFeed(xmlString)
-    entries.forEach { entry ->
-        println("Title: ${entry.title}")
-        println("Author: ${entry.author}")
-        println("Published: ${entry.published}")
-        println("---")
-    }
+    return entries;
 }
-suspend fun loadRssFeed() {
+suspend fun loadRssFeed(): List<RssEntry> {
     val retriever = RssFeedRetriever()
     val xmlString = retriever.fetchXmlFromUrl("https://kx.studio/News/?action=feed")
     val parser = RssFeedParser()
@@ -92,4 +87,6 @@ suspend fun loadRssFeed() {
 
         println("---")
     }
+    return entries;
+
 }
