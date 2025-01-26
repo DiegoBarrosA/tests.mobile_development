@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.prof18.rssparser.model.RssItem
 import one.expressdev.testing.mobile_development.rss.ui.theme.Testsmobile_developmentTheme
-import one.expressdev.testing.mobile_development.Utils
-import one.expressdev.testing.mobile_development.modelo.RssFeed
+import  one.expressdev.testing.mobile_development.Utils
 
+import  one.expressdev.testing.mobile_development.modelo.RssFeed
 class ArticleList : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,22 +44,23 @@ data class ArticleScreenState(
     val selectedArticle: RssItem?,
     val baseUrl: String
 )
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticleListScreen() {
     var articleState by remember {
-        mutableStateOf(ArticleScreenState(isLoading = true, articles = null, selectedArticle = null, baseUrl = ""))
+        mutableStateOf(ArticleScreenState(isLoading = true, articles = emptyList(), selectedArticle = null, baseUrl = ""))
     }
 
     LaunchedEffect(Unit) {
         val parserRss = ParserRss()
+        val allArticles = mutableListOf<RssItem>()
+
         RssFeed.getAllFeeds().forEach { feed ->
             parserRss.getRssChannel(feed.url,
                 onSuccess = { rssChannel ->
+                    allArticles.addAll(rssChannel.items)
                     articleState = articleState.copy(
                         isLoading = false,
-                        articles = rssChannel.items,
+                        articles = allArticles,
                         baseUrl = Utils().getBaseUrl(rssChannel.link.toString())
                     )
                 },
@@ -79,13 +80,15 @@ fun ArticleListScreen() {
                 articleState.isLoading ->
                     CircularProgressIndicator(Modifier.align(Alignment.Center))
 
-                articleState.articles != null ->
-                    ArticleList(
-                        articles = articleState.articles!!,
-                        onArticleSelect = {
-                            articleState = articleState.copy(selectedArticle = it)
-                        }
-                    )
+                articleState.articles?.isNotEmpty() == true ->
+                    articleState.articles?.let {
+                        ArticleList(
+                            articles = it,
+                            onArticleSelect = {
+                                articleState = articleState.copy(selectedArticle = it)
+                            }
+                        )
+                    }
             }
 
             articleState.selectedArticle?.let {
@@ -129,8 +132,8 @@ fun ArticleListItem(article: RssItem, onClick: (RssItem) -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArticleReader(article: RssItem, baseUrl: String, onBack: () -> Unit) {
-    println("Look Mum!! $baseUrl")
+fun ArticleReader(article: RssItem, baseUrl: String , onBack: () -> Unit) {
+    println("Look Mum!!"+ baseUrl)
     val isDarkTheme = isSystemInDarkTheme()
 
     Scaffold(
