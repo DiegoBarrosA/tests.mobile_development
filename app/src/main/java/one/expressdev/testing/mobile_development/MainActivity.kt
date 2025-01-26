@@ -1,5 +1,6 @@
 package one.expressdev.testing.mobile_development
 
+import ArticleList
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -42,10 +43,12 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import one.expressdev.testing.mobile_development.modelo.User
-import one.expressdev.testing.mobile_development.rss.ArticleList
+
 import one.expressdev.testing.mobile_development.rss.RssFeedConfigActivity
 import one.expressdev.testing.mobile_development.rss.RssFeedConfigScreen
+
 import one.expressdev.testing.mobile_development.ui.theme.Testsmobile_developmentTheme
+
 import java.nio.file.WatchEvent
 
 class MainActivity : ComponentActivity() {

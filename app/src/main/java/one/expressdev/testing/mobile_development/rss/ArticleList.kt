@@ -1,5 +1,4 @@
-package one.expressdev.testing.mobile_development.rss
-
+import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -14,18 +13,23 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat.startActivity
 import com.prof18.rssparser.model.RssItem
 import one.expressdev.testing.mobile_development.rss.ui.theme.Testsmobile_developmentTheme
-import  one.expressdev.testing.mobile_development.Utils
+import one.expressdev.testing.mobile_development.Utils
+import one.expressdev.testing.mobile_development.modelo.RssFeed
+import one.expressdev.testing.mobile_development.rss.ParserRss
+import one.expressdev.testing.mobile_development.rss.RssFeedConfigActivity
 
-import  one.expressdev.testing.mobile_development.modelo.RssFeed
 class ArticleList : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,12 +48,14 @@ data class ArticleScreenState(
     val selectedArticle: RssItem?,
     val baseUrl: String
 )
+
 @Composable
 fun ArticleListScreen() {
     var articleState by remember {
         mutableStateOf(ArticleScreenState(isLoading = true, articles = emptyList(), selectedArticle = null, baseUrl = ""))
     }
 
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         val parserRss = ParserRss()
         val allArticles = mutableListOf<RssItem>()
@@ -73,7 +79,19 @@ fun ArticleListScreen() {
     }
 
     Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    // Launch the RssFeedConfigActivity
 
+                    val intent = Intent(context, ArticleList::class.java)
+
+                    context.startActivity(intent)
+                }
+            ) {
+                Icon(Icons.Filled.Settings, contentDescription = "Config")
+            }
+        }
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding)) {
             when {
@@ -106,7 +124,7 @@ fun ArticleList(
     onArticleSelect: (RssItem) -> Unit
 ) {
     LazyColumn(Modifier.fillMaxSize()) {
-        items(articles) { article ->
+        items(articles.sortedByDescending { it.pubDate }) { article ->
             ArticleListItem(article, onArticleSelect)
         }
     }
@@ -132,8 +150,8 @@ fun ArticleListItem(article: RssItem, onClick: (RssItem) -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ArticleReader(article: RssItem, baseUrl: String , onBack: () -> Unit) {
-    println("Look Mum!!"+ baseUrl)
+fun ArticleReader(article: RssItem, baseUrl: String, onBack: () -> Unit) {
+    println("Look Mum!! $baseUrl")
     val isDarkTheme = isSystemInDarkTheme()
 
     Scaffold(
