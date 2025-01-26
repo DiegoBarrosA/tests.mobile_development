@@ -1,3 +1,5 @@
+
+package one.expressdev.testing.mobile_development.rss
 import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView
@@ -7,28 +9,47 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SmallTopAppBar
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat.startActivity
 import com.prof18.rssparser.model.RssItem
-import one.expressdev.testing.mobile_development.rss.ui.theme.Testsmobile_developmentTheme
 import one.expressdev.testing.mobile_development.Utils
 import one.expressdev.testing.mobile_development.modelo.RssFeed
 import one.expressdev.testing.mobile_development.rss.ParserRss
 import one.expressdev.testing.mobile_development.rss.RssFeedConfigActivity
+import one.expressdev.testing.mobile_development.rss.ui.theme.Testsmobile_developmentTheme
 
 class ArticleList : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +73,14 @@ data class ArticleScreenState(
 @Composable
 fun ArticleListScreen() {
     var articleState by remember {
-        mutableStateOf(ArticleScreenState(isLoading = true, articles = emptyList(), selectedArticle = null, baseUrl = ""))
+        mutableStateOf(
+            ArticleScreenState(
+                isLoading = true,
+                articles = emptyList(),
+                selectedArticle = null,
+                baseUrl = ""
+            )
+        )
     }
 
     val context = LocalContext.current
@@ -82,18 +110,20 @@ fun ArticleListScreen() {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    // Launch the RssFeedConfigActivity
 
-                    val intent = Intent(context, ArticleList::class.java)
+                    val intent = Intent(context, RssFeedConfigActivity::class.java)
 
                     context.startActivity(intent)
+
                 }
             ) {
                 Icon(Icons.Filled.Settings, contentDescription = "Config")
             }
         }
     ) { padding ->
-        Box(Modifier.fillMaxSize().padding(padding)) {
+        Box(Modifier
+            .fillMaxSize()
+            .padding(padding)) {
             when {
                 articleState.isLoading ->
                     CircularProgressIndicator(Modifier.align(Alignment.Center))

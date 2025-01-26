@@ -1,6 +1,6 @@
 package one.expressdev.testing.mobile_development
 
-import ArticleList
+import one.expressdev.testing.mobile_development.rss.ArticleList
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
