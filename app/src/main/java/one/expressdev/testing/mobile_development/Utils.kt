@@ -11,6 +11,7 @@ import javax.mail.internet.MimeMessage
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import java.net.URL
 
 class Utils {
     fun getScale(elementType: String): Float {
@@ -61,6 +62,12 @@ class Utils {
 
 
 
+    fun getBaseUrl(fullUrl: String): String {
+        val url = URL(fullUrl)
+        val protocol = url.protocol
+        val host = url.host
+        val port = url.port
 
-
+        return "$protocol://$host${if (port != -1) ":$port" else ""}"
+    }
 }
