@@ -2,7 +2,6 @@ package one.expressdev.testing.mobile_development
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -43,12 +42,10 @@ class SingUpActivity : ComponentActivity() {
         setContent {
             Testsmobile_developmentTheme {
                 SingUpForm()
-
             }
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
@@ -65,24 +62,19 @@ fun SingUpForm() {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
 
     Scaffold(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-
         topBar = {
             MediumTopAppBar(
                 title = {
                     Text(
-                        "Sign up", maxLines = 1, overflow = TextOverflow.Ellipsis,
-
+                        "Registrarse", maxLines = 1, overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .scale(Utils().getScale("title"))
                             .padding(start = 30.dp)
-
                     )
                 },
-
                 scrollBehavior = scrollBehavior
             )
         }
-
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -98,20 +90,18 @@ fun SingUpForm() {
                 .padding(vertical = 8.dp),
                 value = first_name.value,
                 onValueChange = { first_name.value = it },
-                label = { Text("First name") })
+                label = { Text("Nombre") })
 
             TextField(modifier = Modifier
-
                 .scale(Utils().getScale("field"))
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
                 value = last_name.value,
                 onValueChange = { last_name.value = it },
-                label = { Text("Last name") })
+                label = { Text("Apellido") })
 
             TextField(
                 modifier = Modifier
-
                     .scale(Utils().getScale("field"))
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
@@ -120,7 +110,7 @@ fun SingUpForm() {
                     email.value = currentEmail
                     isEmailValid.value = Utils().isEmailValid(currentEmail)
                 },
-                label = { Text("Email") },
+                label = { Text("Correo electrónico") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Email
                 )
@@ -128,13 +118,12 @@ fun SingUpForm() {
 
             TextField(
                 modifier = Modifier
-
                     .scale(Utils().getScale("field"))
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 value = password.value,
                 onValueChange = { password.value = it },
-                label = { Text("Password") },
+                label = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Password
@@ -142,19 +131,18 @@ fun SingUpForm() {
             )
             TextField(
                 modifier = Modifier
-
                     .scale(Utils().getScale("field"))
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 value = confirm_password.value,
-                onValueChange = { confirm_password.value = it },
-                label = { Text("Confirm Password") },
+                onValueChange = { confirm_password.value =
+                    it },
+                label = { Text("Confirmar contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Password
                 )
             )
-
 
             Column(
                 modifier = Modifier
@@ -164,7 +152,7 @@ fun SingUpForm() {
             ) {
                 if (!isEmailValid.value) {
                     Text(
-                        "Please enter a valid email address.",
+                        "Por favor, ingresa una dirección de correo electrónico válida.",
                         modifier = Modifier
                             .scale(Utils().getScale("text"))
                             .padding(vertical = 10.dp)
@@ -173,7 +161,7 @@ fun SingUpForm() {
                 if (password.value != "") {
                     if ((confirm_password.value != "") && (password.value != confirm_password.value)) {
                         Text(
-                            "The passwords do not match.",
+                            "Las contraseñas no coinciden.",
                             modifier = Modifier
                                 .scale(Utils().getScale("text"))
                                 .padding(vertical = 10.dp)
@@ -184,44 +172,29 @@ fun SingUpForm() {
                         Text(
                             errorMessage, modifier = Modifier
                                 .scale(Utils().getScale("text"))
-
                                 .padding(vertical = 10.dp)
                         )
                     }
                 }
-
             }
             Button(modifier = Modifier
                 .scale(Utils().getScale("button"))
                 .padding(30.dp), onClick = {
-
-                if (Utils().isEmailValid(email.value) && (password.value == confirm_password.value ) && Utils().validatePassword(password.value).first ){
-                    val user = User( java.util.UUID.randomUUID().toString(),first_name.value, last_name.value, email.value,password.value)
+                if (Utils().isEmailValid(email.value) && (password.value == confirm_password.value) && Utils().validatePassword(password.value).first) {
+                    val user = User(java.util.UUID.randomUUID().toString(), first_name.value, last_name.value, email.value, password.value)
                     User.addUser(user)
-                    val users = User.getUsers()
-                    for (user in users) {
-                        Log.d(
-                            "HomeActivity",
-                            "Usuario: ${user.first_name} ${user.last_name} ${user.email} ${user.password}}"
-                        )
-                    }
 
                     val intent = Intent(context, MainActivity::class.java)
-
                     context.startActivity(intent)
-                }
-                else{
+                } else {
                     android.widget.Toast.makeText(
                         context,
-                        "Error: Please enter the required data.",
+                        "Error: Por favor, ingresa los datos requeridos.",
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
-
                 }
-
-
             }) {
-                Text("Sign up")
+                Text("Registrarse")
             }
         }
     }
