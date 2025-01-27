@@ -10,14 +10,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import one.expressdev.testing.mobile_development.MainActivity
 import one.expressdev.testing.mobile_development.rss.ui.theme.Testsmobile_developmentTheme
-
-import  one.expressdev.testing.mobile_development.modelo.RssFeed
+import one.expressdev.testing.mobile_development.modelo.RssFeed
 import one.expressdev.testing.mobile_development.modelo.User
 
 class RssFeedConfigActivity : ComponentActivity() {
@@ -30,14 +31,12 @@ class RssFeedConfigActivity : ComponentActivity() {
                 RssFeedConfigScreen(
                     repository = rssFeedRepository,
                     onAddFeed = { feed -> rssFeedRepository.addFeed(feed) },
-                    onRemoveFeed = { feed -> rssFeedRepository.removeFeed(feed) }
-                    ,
-                    onLogout = { User.setLoggedUser(null)
+                    onRemoveFeed = { feed -> rssFeedRepository.removeFeed(feed) },
+                    onLogout = {
+                        User.setLoggedUser(null)
                         val intent = Intent(this, MainActivity::class.java)
-
                         startActivity(intent)
                         finish()
-
                     }
                 )
             }
@@ -45,27 +44,51 @@ class RssFeedConfigActivity : ComponentActivity() {
     }
 }
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RssFeedConfigScreen(
     repository: RssFeed.Companion,
     onAddFeed: (RssFeed) -> Unit,
     onRemoveFeed: (RssFeed) -> Unit,
-    onLogout: () -> Unit // Add this parameter for logout action
+    onLogout: () -> Unit
 ) {
-    var showAddDialog by remember { mutableStateOf(false) }
+    var showAddDialog by
+    remember { mutableStateOf(false) }
+    var showProfileDialog by remember { mutableStateOf(false) }
     var newFeedName by remember { mutableStateOf("") }
     var newFeedUrl by remember { mutableStateOf("") }
 
+    val currentUser = User.getLoggedUser()
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var currentPassword by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(showProfileDialog) {
+        if (showProfileDialog && currentUser is User) {
+            firstName = currentUser.first_name
+            lastName = currentUser.last_name
+            email = currentUser.email
+            currentPassword = ""
+            errorMessage = null
+        }
+    }
+
     Scaffold(
         topBar = {
-            SmallTopAppBar(title = { Text("RSS Feed Configuration") })
+            SmallTopAppBar(
+                title = { Text("Configuración de RSS Feed") },
+                actions = {
+                    IconButton(onClick = { showProfileDialog = true }) {
+                        Icon(Icons.Default.Person, contentDescription = "Actualizar Perfil")
+                    }
+                }
+            )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = { showAddDialog = true }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Feed")
+                Icon(Icons.Default.Add, contentDescription = "Agregar Feed")
             }
         }
     ) { padding ->
@@ -79,33 +102,32 @@ fun RssFeedConfigScreen(
                 }
             }
 
-            // Add the Logout button here
             Button(
                 onClick = { onLogout() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-                Text("Logout")
+                Text("Cerrar Sesión")
             }
         }
 
         if (showAddDialog) {
             AlertDialog(
                 onDismissRequest = { showAddDialog = false },
-                title = { Text("Add New RSS Feed") },
+                title = { Text("Agregar Nuevo RSS Feed") },
                 text = {
                     Column {
                         TextField(
                             value = newFeedName,
                             onValueChange = { newFeedName = it },
-                            label = { Text("Feed Name") }
+                            label = { Text("Nombre del Feed") }
                         )
                         Spacer(Modifier.height(8.dp))
                         TextField(
                             value = newFeedUrl,
                             onValueChange = { newFeedUrl = it },
-                            label = { Text("Feed URL") }
+                            label = { Text("URL del Feed") }
                         )
                     }
                 },
@@ -120,19 +142,111 @@ fun RssFeedConfigScreen(
                             }
                         }
                     ) {
-                        Text("Add")
+                        Text("Agregar")
                     }
                 },
                 dismissButton = {
                     TextButton(onClick = { showAddDialog = false }) {
-                        Text("Cancel")
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
+
+        if (showProfileDialog && currentUser is User) {
+            AlertDialog(
+                onDismissRequest = { showProfileDialog = false },
+                title = { Text("Actualizar Perfil") },
+                text = {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                    ) {
+                        if (errorMessage != null) {
+                            Text(
+                                text = errorMessage ?: "",
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
+                        }
+                        TextField(
+                            value = firstName,
+                            onValueChange = { firstName = it },
+                            label = { Text("Nombre") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        TextField(
+                            value = lastName,
+                            onValueChange = { lastName = it },
+                            label = { Text("Apellido") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        TextField(
+                            value = email,
+                            onValueChange = { email = it },
+                            label = { Text("Correo Electrónico") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        TextField(
+                            value = currentPassword,
+                            onValueChange = { currentPassword = it },
+                            label = { Text("Contraseña Actual") },
+                            modifier = Modifier.fillMaxWidth(),
+                            visualTransformation = PasswordVisualTransformation()
+                        )
+                    }
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            if (firstName.isNotBlank() && lastName.isNotBlank() &&
+                                email.isNotBlank() && currentPassword.isNotBlank()) {
+
+                                if (currentPassword != currentUser.password) {
+                                    errorMessage = "Contraseña incorrecta"
+                                    return@TextButton
+                                }
+
+                                if (User.isEmailTaken(email, currentUser.id)) {
+                                    errorMessage = "El correo ya está en uso"
+                                    return@TextButton
+                                }
+
+                                val updatedUser = User(
+                                    id = currentUser.id,
+                                    first_name = firstName,
+                                    last_name = lastName,
+                                    email = email,
+                                    password = currentUser.password
+                                )
+
+                                User.updateUser(updatedUser)
+                                User.setLoggedUser(updatedUser)
+                                showProfileDialog = false
+                            } else {
+                                errorMessage = "Todos los campos son obligatorios"
+                            }
+                        }
+                    ) {
+                        Text("Actualizar")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showProfileDialog = false
+                        errorMessage = null
+                    }) {
+                        Text("Cancelar")
                     }
                 }
             )
         }
     }
 }
-
 
 @Composable
 fun RssFeedItem(
@@ -149,7 +263,7 @@ fun RssFeedItem(
             Text(feed.url, style = MaterialTheme.typography.bodySmall)
         }
         IconButton(onClick = onDelete) {
-            Icon(Icons.Default.Delete, contentDescription = "Delete Feed")
+            Icon(Icons.Default.Delete, contentDescription = "Eliminar Feed")
         }
     }
 }

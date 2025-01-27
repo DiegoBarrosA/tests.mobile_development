@@ -41,11 +41,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 import one.expressdev.testing.mobile_development.modelo.User
-
-
 import one.expressdev.testing.mobile_development.ui.theme.Testsmobile_developmentTheme
 import kotlin.reflect.typeOf
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,21 +57,12 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-
-
             Testsmobile_developmentTheme {
                 MainMenu()
-
-
-
             }
         }
-
-
-
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
@@ -90,17 +78,14 @@ fun MainMenu() {
             MediumTopAppBar(
                 title = {
                     Text(
-                        "Main Menu",
+                        "Menú Principal",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-
                         modifier = Modifier
                             .scale(Utils().getScale("title"))
                             .padding(start = 30.dp)
-
                     )
                 },
-
                 scrollBehavior = scrollBehavior
             )
         }
@@ -118,51 +103,33 @@ fun MainMenu() {
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 Button(
                     onClick = {
                         val intent = Intent(context, SingUpActivity::class.java)
-
-//                        val intent = Intent(context, RssFeedConfigActivity::class.java)
                         context.startActivity(intent)
-
-
                     }, modifier = Modifier
-                        .scale(
-                            Utils().getScale("button")
-
-                        )
-
+                        .scale(Utils().getScale("button"))
                         .padding(20.dp)
                 ) {
                     Text(
-                        "Sign up",
+                        "Registrarse",
                         modifier = Modifier.scale(Utils().getScale("text"))
-
                     )
-
-
                 }
                 Button(
                     onClick = {
                         val intent = Intent(context, LoginActivity::class.java)
                         context.startActivity(intent)
                     }, modifier = Modifier
-                        .scale(
-                            Utils().getScale("button")
-                        )
-
+                        .scale(Utils().getScale("button"))
                         .padding(20.dp)
                 ) {
                     Text(
-                        "Log in",
+                        "Iniciar sesión",
                         modifier = Modifier.scale(Utils().getScale("text"))
                     )
                 }
-
-
             }
         }
     }
-
 }
