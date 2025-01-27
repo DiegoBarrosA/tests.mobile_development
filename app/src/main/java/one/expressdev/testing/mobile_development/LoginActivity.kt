@@ -49,7 +49,6 @@ class LoginActivity : ComponentActivity() {
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
@@ -57,7 +56,7 @@ fun LogInForm() {
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isEmailValid = remember { mutableStateOf(true) }
-    val errorLogIn = false;
+    val errorLogIn = false
     val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
@@ -66,35 +65,29 @@ fun LogInForm() {
             MediumTopAppBar(
                 title = {
                     Text(
-                        "Log in",
+                        "Iniciar sesión",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .scale(Utils().getScale("title"))
                             .padding(start = 30.dp)
-
                     )
                 },
-
                 scrollBehavior = scrollBehavior
             )
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier
-            .fillMaxSize()
+                .fillMaxSize()
                 .padding(innerPadding)
-
                 .padding(top = 150.dp)
                 .padding(horizontal = 32.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-
             TextField(
                 modifier = Modifier
-
                     .scale(Utils().getScale("field"))
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
@@ -103,7 +96,7 @@ fun LogInForm() {
                     email.value = currentEmail
                     isEmailValid.value = Utils().isEmailValid(currentEmail)
                 },
-                label = { Text("Email") },
+                label = { Text("Correo electrónico") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Email
                 )
@@ -111,19 +104,17 @@ fun LogInForm() {
 
             TextField(
                 modifier = Modifier
-
                     .scale(Utils().getScale("field"))
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 value = password.value,
                 onValueChange = { password.value = it },
-                label = { Text("Password") },
+                label = { Text("Contraseña") },
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Password
                 )
             )
-
 
             Column(
                 modifier = Modifier
@@ -133,7 +124,7 @@ fun LogInForm() {
             ) {
                 if (!isEmailValid.value) {
                     Text(
-                        "Please enter a valid email address.",
+                        "Por favor, ingrese una dirección de correo electrónico válida.",
                         modifier = Modifier
                             .scale(Utils().getScale("text"))
                             .padding(vertical = 10.dp)
@@ -141,15 +132,12 @@ fun LogInForm() {
                 }
                 if (errorLogIn) {
                     Text(
-                        "Wrong email or password",
+                        "Correo electrónico o contraseña incorrectos",
                         modifier = Modifier
                             .scale(Utils().getScale("text"))
                             .padding(vertical = 10.dp)
                     )
-
                 }
-
-
             }
             Button(modifier = Modifier
                 .scale(Utils().getScale("button"))
@@ -162,39 +150,27 @@ fun LogInForm() {
                 }
                 if (userExists) {
                     users.find { it.email == email && it.password == password }?.let {
-                        User.setLoggedUser(
-                            it
-                        )
+                        User.setLoggedUser(it)
                     }
-                    // Login successful - navigate to main activity
-                    println("The logged user is: "+ User.getLoggedUser())
                     val intent = Intent(context, ArticleList::class.java)
                     context.startActivity(intent)
                 } else {
                     User.setLoggedUser(null)
-
-                    // Show error message for failed login
-
                     android.widget.Toast.makeText(
                         context,
-                        "Invalid email or password.",
+                        "Correo electrónico o contraseña inválidos.",
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
                 }
             }) {
-                Text("Log in")
+                Text("Iniciar sesión")
             }
-            Text("Forgot your password? Click here to recover.",
+            Text("¿Olvidaste tu contraseña? Haz clic aquí para recuperarla.",
                 modifier = Modifier.clickable(onClick = {
-
-
                     val intent = Intent(context, HomeActivity::class.java)
-
                     context.startActivity(intent)
                 })
             )
-
         }
     }
 }
-
