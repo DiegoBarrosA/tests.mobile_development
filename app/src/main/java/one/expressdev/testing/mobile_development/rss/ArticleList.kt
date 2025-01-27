@@ -1,5 +1,5 @@
-
 package one.expressdev.testing.mobile_development.rss
+
 import android.content.Intent
 import android.os.Bundle
 import android.webkit.WebView
@@ -100,7 +100,6 @@ fun ArticleListScreen() {
                 },
                 onError = {
                     articleState = articleState.copy(isLoading = false)
-                    println(it)
                 }
             )
         }
@@ -110,14 +109,11 @@ fun ArticleListScreen() {
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-
                     val intent = Intent(context, RssFeedConfigActivity::class.java)
-
                     context.startActivity(intent)
-
                 }
             ) {
-                Icon(Icons.Filled.Settings, contentDescription = "Config")
+                Icon(Icons.Filled.Settings, contentDescription = "Configuración")
             }
         }
     ) { padding ->
@@ -154,7 +150,8 @@ fun ArticleList(
     onArticleSelect: (RssItem) -> Unit
 ) {
     LazyColumn(Modifier.fillMaxSize()) {
-        items(articles.sortedByDescending { it.pubDate }) { article ->
+        items(articles.sortedByDescending { it.pubDate })
+        { article ->
             ArticleListItem(article, onArticleSelect)
         }
     }
@@ -162,7 +159,6 @@ fun ArticleList(
 
 @Composable
 fun ArticleListItem(article: RssItem, onClick: (RssItem) -> Unit) {
-    println(article.content)
     Row(
         Modifier
             .fillMaxWidth()
@@ -175,14 +171,13 @@ fun ArticleListItem(article: RssItem, onClick: (RssItem) -> Unit) {
             Spacer(Modifier.height(4.dp))
             Text(article.author ?: "", style = MaterialTheme.typography.bodyMedium)
         }
-        Icon(Icons.Default.ArrowForward, contentDescription = "Open article")
+        Icon(Icons.Default.ArrowForward, contentDescription = "Abrir artículo")
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticleReader(article: RssItem, baseUrl: String, onBack: () -> Unit) {
-    println("Look Mum!! $baseUrl")
     val isDarkTheme = isSystemInDarkTheme()
 
     Scaffold(
@@ -190,14 +185,14 @@ fun ArticleReader(article: RssItem, baseUrl: String, onBack: () -> Unit) {
             SmallTopAppBar(
                 title = {
                     Text(
-                        article.title ?: "Article",
+                        article.title ?: "Artículo",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
                     }
                 }
             )
