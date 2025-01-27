@@ -3,7 +3,6 @@ package one.expressdev.testing.mobile_development
 import EmailService
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -49,14 +48,11 @@ class HomeActivity : ComponentActivity() {
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Preview(showBackground = true)
 @Composable
 fun RecoverAccount() {
     val context = LocalContext.current
-
     val email = remember { mutableStateOf("") }
-
     val isEmailValid = remember { mutableStateOf(true) }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
     Scaffold(
@@ -65,83 +61,63 @@ fun RecoverAccount() {
             MediumTopAppBar(
                 title = {
                     Text(
-                        "Recover your account",
+                        "Recupera tu cuenta",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .scale(Utils().getScale("title"))
                             .padding(start = 30.dp)
-
                     )
                 },
-
                 scrollBehavior = scrollBehavior
             )
         }
     ) { innerPadding ->
-
-
-        Column(   modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding)
-            .padding(horizontal = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally) {
-Text("Please enter your email below and we will send  you your password.", modifier = Modifier.padding(bottom = 20.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Por favor, ingresa tu correo electrónico a continuación y te enviaremos tu contraseña.", modifier = Modifier.padding(bottom = 20.dp))
 
             TextField(
                 modifier = Modifier
-
                     .scale(Utils().getScale("field"))
                     .padding(vertical = 8.dp),
-
                 value = email.value,
                 onValueChange = { currentEmail ->
                     email.value = currentEmail
                     isEmailValid.value = Utils().isEmailValid(currentEmail)
                 },
-                label = { Text("Email") },
+                label = { Text("Correo electrónico") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Email
                 )
             )
             Button(onClick = {
-                if(isEmailValid.value){
-
+                if (isEmailValid.value) {
                     val users = User.getUsers()
                     val email = email.value
                     val user = users.firstOrNull { it.email == email }
-                    if(user != null)
-                    {
-                        EmailService().sendEmail(email,user.password)
+                    if (user != null) {
+                        EmailService().sendEmail(email, user.password)
                     }
-                    else{
-                        Log.d("AccountRecoveryActivity","null user")
-                    }
-
                     val intent = Intent(context, LoginActivity::class.java)
                     context.startActivity(intent)
-
-                }
-                else{
-
+                } else {
                     android.widget.Toast.makeText(
                         context,
-                        "Error: Please enter a valid email.",
+                        "Error: Por favor, ingresa un correo electrónico válido.",
                         android.widget.Toast.LENGTH_SHORT
                     ).show()
-
                 }
-
             },
                 modifier = Modifier.padding(innerPadding)
-            )
-            {
-
-
-                Text("Recover account")
+            ) {
+                Text("Recuperar cuenta")
             }
-
         }
-
     }
 }
