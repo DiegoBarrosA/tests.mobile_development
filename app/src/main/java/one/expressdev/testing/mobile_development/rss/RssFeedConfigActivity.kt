@@ -1,5 +1,6 @@
 package one.expressdev.testing.mobile_development.rss
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,9 +14,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import one.expressdev.testing.mobile_development.MainActivity
 import one.expressdev.testing.mobile_development.rss.ui.theme.Testsmobile_developmentTheme
 
 import  one.expressdev.testing.mobile_development.modelo.RssFeed
+import one.expressdev.testing.mobile_development.modelo.User
 
 class RssFeedConfigActivity : ComponentActivity() {
     private val rssFeedRepository = RssFeed.Companion
@@ -28,6 +31,14 @@ class RssFeedConfigActivity : ComponentActivity() {
                     repository = rssFeedRepository,
                     onAddFeed = { feed -> rssFeedRepository.addFeed(feed) },
                     onRemoveFeed = { feed -> rssFeedRepository.removeFeed(feed) }
+                    ,
+                    onLogout = { User.setLoggedUser(null)
+                        val intent = Intent(this, MainActivity::class.java)
+
+                        startActivity(intent)
+                        finish()
+
+                    }
                 )
             }
         }
@@ -41,7 +52,8 @@ class RssFeedConfigActivity : ComponentActivity() {
 fun RssFeedConfigScreen(
     repository: RssFeed.Companion,
     onAddFeed: (RssFeed) -> Unit,
-    onRemoveFeed: (RssFeed) -> Unit
+    onRemoveFeed: (RssFeed) -> Unit,
+    onLogout: () -> Unit // Add this parameter for logout action
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
     var newFeedName by remember { mutableStateOf("") }
@@ -65,6 +77,16 @@ fun RssFeedConfigScreen(
                         onDelete = { onRemoveFeed(feed) }
                     )
                 }
+            }
+
+            // Add the Logout button here
+            Button(
+                onClick = { onLogout() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text("Logout")
             }
         }
 
@@ -110,6 +132,7 @@ fun RssFeedConfigScreen(
         }
     }
 }
+
 
 @Composable
 fun RssFeedItem(

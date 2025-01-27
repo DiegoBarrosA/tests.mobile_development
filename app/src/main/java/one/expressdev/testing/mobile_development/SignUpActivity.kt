@@ -196,7 +196,7 @@ fun SingUpForm() {
                 .padding(30.dp), onClick = {
 
                 if (Utils().isEmailValid(email.value) && (password.value == confirm_password.value ) && Utils().validatePassword(password.value).first ){
-                    val user = User(first_name.value, last_name.value, email.value,password.value)
+                    val user = User( java.util.UUID.randomUUID().toString(),first_name.value, last_name.value, email.value,password.value)
                     User.addUser(user)
                     val users = User.getUsers()
                     for (user in users) {

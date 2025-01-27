@@ -162,6 +162,7 @@ fun ArticleList(
 
 @Composable
 fun ArticleListItem(article: RssItem, onClick: (RssItem) -> Unit) {
+    println(article.content)
     Row(
         Modifier
             .fillMaxWidth()

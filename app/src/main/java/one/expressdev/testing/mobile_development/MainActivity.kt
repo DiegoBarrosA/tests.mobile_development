@@ -39,22 +39,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+
 import one.expressdev.testing.mobile_development.modelo.User
 
-import one.expressdev.testing.mobile_development.rss.RssFeedConfigActivity
-import one.expressdev.testing.mobile_development.rss.RssFeedConfigScreen
 
 import one.expressdev.testing.mobile_development.ui.theme.Testsmobile_developmentTheme
+import kotlin.reflect.typeOf
 
-import java.nio.file.WatchEvent
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        if (User.getLoggedUser() != false) {
+            val intent = Intent(this, ArticleList::class.java)
+            startActivity(intent)
+            finish()
+            return
+        }
+
         setContent {
 
 
@@ -65,6 +69,9 @@ class MainActivity : ComponentActivity() {
 
             }
         }
+
+
+
     }
 }
 
@@ -114,7 +121,7 @@ fun MainMenu() {
 
                 Button(
                     onClick = {
-                        val intent = Intent(context, ArticleList::class.java)
+                        val intent = Intent(context, SingUpActivity::class.java)
 
 //                        val intent = Intent(context, RssFeedConfigActivity::class.java)
                         context.startActivity(intent)

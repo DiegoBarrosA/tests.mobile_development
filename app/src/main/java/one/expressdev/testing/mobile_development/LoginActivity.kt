@@ -34,6 +34,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import one.expressdev.testing.mobile_development.modelo.User
+import one.expressdev.testing.mobile_development.rss.ArticleList
 import one.expressdev.testing.mobile_development.ui.theme.Testsmobile_developmentTheme
 
 class LoginActivity : ComponentActivity() {
@@ -160,11 +161,20 @@ fun LogInForm() {
                     user.email == email && user.password == password
                 }
                 if (userExists) {
+                    users.find { it.email == email && it.password == password }?.let {
+                        User.setLoggedUser(
+                            it
+                        )
+                    }
                     // Login successful - navigate to main activity
-                    val intent = Intent(context, MainActivity::class.java)
+                    println("The logged user is: "+ User.getLoggedUser())
+                    val intent = Intent(context, ArticleList::class.java)
                     context.startActivity(intent)
                 } else {
+                    User.setLoggedUser(null)
+
                     // Show error message for failed login
+
                     android.widget.Toast.makeText(
                         context,
                         "Invalid email or password.",
