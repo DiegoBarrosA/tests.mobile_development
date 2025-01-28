@@ -11,7 +11,9 @@ data class RssFeed(
     companion object {
 
 
-        private val _feeds = mutableStateListOf<RssFeed>(RssFeed("9802893012jk09jfdw2",name= "KX Studio","https://kx.studio/News/?action=feed"),RssFeed("dsadlasjkfladfas","The intercept","https://theintercept.com/feed/?lang=en"))
+        private val _feeds = mutableStateListOf<RssFeed>(RssFeed("9802893012jk09jfdw2",name= "KX Studio","https://kx.studio/News/?action=feed"),RssFeed("dsadlasjkfladfas","The intercept","https://theintercept.com/feed/?lang=en"),
+            RssFeed("kdlsalkdlksadlsadldlaksdlkasjdpo","Prensa Austral","https://laprensaaustral.cl/rss")
+        )
         val feeds: List<RssFeed> get() = _feeds
 
         fun addFeed(feed: RssFeed) {
