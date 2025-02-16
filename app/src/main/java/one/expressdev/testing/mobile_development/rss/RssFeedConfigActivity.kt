@@ -1,5 +1,4 @@
 package one.expressdev.testing.mobile_development.rss
-
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -14,6 +13,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import one.expressdev.testing.mobile_development.MainActivity
@@ -22,23 +22,28 @@ import one.expressdev.testing.mobile_development.modelo.RssFeed
 import one.expressdev.testing.mobile_development.modelo.User
 
 class RssFeedConfigActivity : ComponentActivity() {
-    private val rssFeedRepository = RssFeed.Companion
+    private val rssFeedRepository = RssFeed
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Testsmobile_developmentTheme {
-                RssFeedConfigScreen(
-                    repository = rssFeedRepository,
-                    onAddFeed = { feed -> rssFeedRepository.addFeed(feed) },
-                    onRemoveFeed = { feed -> rssFeedRepository.removeFeed(feed) },
-                    onLogout = {
-                        User.setLoggedUser(null)
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }
-                )
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Color(0xFFFFFFFF)
+                ) {
+                    RssFeedConfigScreen(
+                        repository = rssFeedRepository,
+                        onAddFeed = { feed -> rssFeedRepository.addFeed(feed) },
+                        onRemoveFeed = { feed -> rssFeedRepository.removeFeed(feed) },
+                        onLogout = {
+                            User.setLoggedUser(null)
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+                    )
+                }
             }
         }
     }
@@ -52,8 +57,7 @@ fun RssFeedConfigScreen(
     onRemoveFeed: (RssFeed) -> Unit,
     onLogout: () -> Unit
 ) {
-    var showAddDialog by
-    remember { mutableStateOf(false) }
+    var showAddDialog by remember { mutableStateOf(false) }
     var showProfileDialog by remember { mutableStateOf(false) }
     var newFeedName by remember { mutableStateOf("") }
     var newFeedUrl by remember { mutableStateOf("") }
@@ -76,174 +80,247 @@ fun RssFeedConfigScreen(
     }
 
     Scaffold(
+        containerColor = Color(0xFFFFFFFF),
         topBar = {
             SmallTopAppBar(
-                title = { Text("Configuración de RSS Feed") },
+                title = {
+                    Text(
+                        "Configuración de RSS Feed",
+                        color = Color(0xFF175770)
+                    )
+                },
                 actions = {
                     IconButton(onClick = { showProfileDialog = true }) {
-                        Icon(Icons.Default.Person, contentDescription = "Actualizar Perfil")
+                        Icon(
+                            Icons.Default.Person,
+                            contentDescription = "Actualizar Perfil",
+                            tint = Color(0xFF43409B)
+                        )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.smallTopAppBarColors(
+                    containerColor = Color(0xFFFFFFFF),
+                    titleContentColor = Color(0xFF175770),
+                    actionIconContentColor = Color(0xFF43409B)
+                )
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { showAddDialog = true }) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar Feed")
+            FloatingActionButton(
+                onClick = { showAddDialog = true },
+                containerColor = Color(0xFF175770)
+            ) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Agregar Feed",
+                    tint = Color(0xFFFFFFFF)
+                )
             }
         }
     ) { padding ->
         Column(Modifier.padding(padding)) {
-            LazyColumn {
-                items(repository.feeds) { feed ->
-                    RssFeedItem(
-                        feed = feed,
-                        onDelete = { onRemoveFeed(feed) }
-                    )
-                }
-            }
-
             Button(
                 onClick = { onLogout() },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
+                    .padding(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF175770),
+                    contentColor = Color(0xFFFFFFFF)
+                )
             ) {
                 Text("Cerrar Sesión")
             }
-        }
 
-        if (showAddDialog) {
-            AlertDialog(
-                onDismissRequest = { showAddDialog = false },
-                title = { Text("Agregar Nuevo RSS Feed") },
-                text = {
-                    Column {
-                        TextField(
-                            value = newFeedName,
-                            onValueChange = { newFeedName = it },
-                            label = { Text("Nombre del Feed") }
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        TextField(
-                            value = newFeedUrl,
-                            onValueChange = { newFeedUrl = it },
-                            label = { Text("URL del Feed") }
-                        )
-                    }
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            if (newFeedName.isNotBlank() && newFeedUrl.isNotBlank()) {
-                                onAddFeed(RssFeed(name = newFeedName, url = newFeedUrl))
-                                newFeedName = ""
-                                newFeedUrl = ""
-                                showAddDialog = false
-                            }
-                        }
-                    ) {
-                        Text("Agregar")
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { showAddDialog = false }) {
-                        Text("Cancelar")
-                    }
+            LazyColumn {
+                items(repository.getFeeds()) { feed ->
+                    RssFeedItem(feed = feed, onDelete = { onRemoveFeed(feed) })
                 }
-            )
-        }
+            }
 
-        if (showProfileDialog && currentUser is User) {
-            AlertDialog(
-                onDismissRequest = { showProfileDialog = false },
-                title = { Text("Actualizar Perfil") },
-                text = {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp)
-                    ) {
-                        if (errorMessage != null) {
-                            Text(
-                                text = errorMessage ?: "",
-                                color = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.padding(bottom = 8.dp)
+            if (showAddDialog) {
+                AlertDialog(
+                    onDismissRequest = { showAddDialog = false },
+                    containerColor = Color(0xFFFFFFFF),
+                    titleContentColor = Color(0xFF175770),
+                    title = { Text("Agregar Nuevo RSS Feed") },
+                    text = {
+                        Column {
+                            TextField(
+                                value = newFeedName,
+                                onValueChange = { newFeedName = it },
+                                label = { Text("Nombre del Feed") },
+                                colors = TextFieldDefaults.textFieldColors(
+                                    cursorColor = Color(0xFF175770),
+                                    focusedLabelColor = Color(0xFF175770),
+                                    focusedIndicatorColor = Color(0xFF175770)
+                                )
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            TextField(
+                                value = newFeedUrl,
+                                onValueChange = { newFeedUrl = it },
+                                label = { Text("URL del Feed") },
+                                colors = TextFieldDefaults.textFieldColors(
+                                    cursorColor = Color(0xFF175770),
+                                    focusedLabelColor = Color(0xFF175770),
+                                    focusedIndicatorColor = Color(0xFF175770)
+                                )
                             )
                         }
-                        TextField(
-                            value = firstName,
-                            onValueChange = { firstName = it },
-                            label = { Text("Nombre") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        TextField(
-                            value = lastName,
-                            onValueChange = { lastName = it },
-                            label = { Text("Apellido") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        TextField(
-                            value = email,
-                            onValueChange = { email = it },
-                            label = { Text("Correo Electrónico") },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        TextField(
-                            value = currentPassword,
-                            onValueChange = { currentPassword = it },
-                            label = { Text("Contraseña Actual") },
-                            modifier = Modifier.fillMaxWidth(),
-                            visualTransformation = PasswordVisualTransformation()
-                        )
-                    }
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            if (firstName.isNotBlank() && lastName.isNotBlank() &&
-                                email.isNotBlank() && currentPassword.isNotBlank()) {
-
-                                if (currentPassword != currentUser.password) {
-                                    errorMessage = "Contraseña incorrecta"
-                                    return@TextButton
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                if (newFeedName.isNotBlank() && newFeedUrl.isNotBlank()) {
+                                    onAddFeed(RssFeed(name = newFeedName, url = newFeedUrl))
+                                    newFeedName = ""
+                                    newFeedUrl = ""
+                                    showAddDialog = false
                                 }
-
-                                if (User.isEmailTaken(email, currentUser.id)) {
-                                    errorMessage = "El correo ya está en uso"
-                                    return@TextButton
-                                }
-
-                                val updatedUser = User(
-                                    id = currentUser.id,
-                                    first_name = firstName,
-                                    last_name = lastName,
-                                    email = email,
-                                    password = currentUser.password
-                                )
-
-                                User.updateUser(updatedUser)
-                                User.setLoggedUser(updatedUser)
-                                showProfileDialog = false
-                            } else {
-                                errorMessage = "Todos los campos son obligatorios"
-                            }
+                            },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = Color(0xFF175770)
+                            )
+                        ) {
+                            Text("Agregar")
                         }
-                    ) {
-                        Text("Actualizar")
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { showAddDialog = false },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = Color(0xFF254691)
+                            )
+                        ) {
+                            Text("Cancelar")
+                        }
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = {
-                        showProfileDialog = false
-                        errorMessage = null
-                    }) {
-                        Text("Cancelar")
+                )
+            }
+
+            if (showProfileDialog && currentUser is User) {
+                AlertDialog(
+                    onDismissRequest = { showProfileDialog = false },
+                    containerColor = Color(0xFFFFFFFF),
+                    titleContentColor = Color(0xFF175770),
+                    title = { Text("Actualizar Perfil") },
+                    text = {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                        ) {
+                            if (errorMessage != null) {
+                                Text(
+                                    text = errorMessage ?: "",
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.padding(bottom = 8.dp)
+                                )
+                            }
+                            TextField(
+                                value = firstName,
+                                onValueChange = { firstName = it },
+                                label = { Text("Nombre") },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = TextFieldDefaults.textFieldColors(
+                                    cursorColor = Color(0xFF175770),
+                                    focusedLabelColor = Color(0xFF175770),
+                                    focusedIndicatorColor = Color(0xFF175770)
+                                )
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            TextField(
+                                value = lastName,
+                                onValueChange = { lastName = it },
+                                label = { Text("Apellido") },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = TextFieldDefaults.textFieldColors(
+                                    cursorColor = Color(0xFF175770),
+                                    focusedLabelColor = Color(0xFF175770),
+                                    focusedIndicatorColor = Color(0xFF175770)
+                                )
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            TextField(
+                                value = email,
+                                onValueChange = { email = it },
+                                label = { Text("Correo Electrónico") },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = TextFieldDefaults.textFieldColors(
+                                    cursorColor = Color(0xFF175770),
+                                    focusedLabelColor = Color(0xFF175770),
+                                    focusedIndicatorColor = Color(0xFF175770)
+                                )
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            TextField(
+                                value = currentPassword,
+                                onValueChange = { currentPassword = it },
+                                label = { Text("Contraseña Actual") },
+                                modifier = Modifier.fillMaxWidth(),
+                                visualTransformation = PasswordVisualTransformation(),
+                                colors = TextFieldDefaults.textFieldColors(
+                                    cursorColor = Color(0xFF175770),
+                                    focusedLabelColor = Color(0xFF175770),
+                                    focusedIndicatorColor = Color(0xFF175770)
+                                )
+                            )
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                if (firstName.isNotBlank() && lastName.isNotBlank() &&
+                                    email.isNotBlank() && currentPassword.isNotBlank()
+                                ) {
+                                    if (currentPassword != currentUser.password) {
+                                        errorMessage = "Contraseña incorrecta"
+                                        return@TextButton
+                                    }
+
+                                    if (User.isEmailTaken(email, currentUser.id)) {
+                                        errorMessage = "El correo ya está en uso"
+                                        return@TextButton
+                                    }
+
+                                    val updatedUser = User(
+                                        id = currentUser.id,
+                                        first_name = firstName,
+                                        last_name = lastName,
+                                        email = email,
+                                        password = currentUser.password
+                                    )
+
+                                    User.updateUser(updatedUser)
+                                    User.setLoggedUser(updatedUser)
+                                    showProfileDialog = false
+                                } else {
+                                    errorMessage = "Todos los campos son obligatorios"
+                                }
+                            },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = Color(0xFF175770)
+                            )
+                        ) {
+                            Text("Actualizar")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                showProfileDialog = false
+                                errorMessage = null
+                            },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = Color(0xFF254691)
+                            )
+                        ) {
+                            Text("Cancelar")
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
@@ -259,11 +336,23 @@ fun RssFeedItem(
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Column(Modifier.weight(1f)) {
-            Text(feed.name, style = MaterialTheme.typography.titleMedium)
-            Text(feed.url, style = MaterialTheme.typography.bodySmall)
+            Text(
+                text = feed.name,
+                style = MaterialTheme.typography.titleMedium,
+                color = Color(0xFF175770)
+            )
+            Text(
+                text = feed.url,
+                style = MaterialTheme.typography.bodySmall,
+                color = Color(0xFF254691)
+            )
         }
         IconButton(onClick = onDelete) {
-            Icon(Icons.Default.Delete, contentDescription = "Eliminar Feed")
+            Icon(
+                Icons.Default.Delete,
+                contentDescription = "Eliminar Feed",
+                tint = Color(0xFF43409B)
+            )
         }
     }
 }

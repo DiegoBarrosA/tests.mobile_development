@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -26,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import one.expressdev.testing.mobile_development.modelo.User
 import one.expressdev.testing.mobile_development.rss.ArticleList
 import one.expressdev.testing.mobile_development.ui.theme.Testsmobile_developmentTheme
+import one.expressdev.testing.mobile_development.ui.theme.ColorScheme
 
 class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,12 +57,14 @@ class LoginActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun LogInForm() {
+    val colors = ColorScheme()
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
     val isEmailValid = remember { mutableStateOf(true) }
     val errorLogIn = false
     val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(rememberTopAppBarState())
+
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -70,9 +76,13 @@ fun LogInForm() {
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .scale(Utils().getScale("title"))
-                            .padding(start = 30.dp)
+                            .padding(start = 30.dp),
+                        color = colors.white
                     )
                 },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = colors.primary
+                ),
                 scrollBehavior = scrollBehavior
             )
         }
@@ -99,6 +109,11 @@ fun LogInForm() {
                 label = { Text("Correo electrónico") },
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Email
+                ),
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = colors.white,
+                    focusedIndicatorColor = colors.tertiary,
+                    unfocusedIndicatorColor = Color.Black
                 )
             )
 
@@ -113,6 +128,11 @@ fun LogInForm() {
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Password
+                ),
+                colors = TextFieldDefaults.textFieldColors(
+                    containerColor = colors.white,
+                    focusedIndicatorColor = colors.tertiary,
+                    unfocusedIndicatorColor = Color.Black
                 )
             )
 
@@ -127,7 +147,8 @@ fun LogInForm() {
                         "Por favor, ingrese una dirección de correo electrónico válida.",
                         modifier = Modifier
                             .scale(Utils().getScale("text"))
-                            .padding(vertical = 10.dp)
+                            .padding(vertical = 10.dp),
+                        color = colors.quaternary
                     )
                 }
                 if (errorLogIn) {
@@ -135,41 +156,51 @@ fun LogInForm() {
                         "Correo electrónico o contraseña incorrectos",
                         modifier = Modifier
                             .scale(Utils().getScale("text"))
-                            .padding(vertical = 10.dp)
+                            .padding(vertical = 10.dp),
+                        color = colors.quaternary
                     )
                 }
             }
-            Button(modifier = Modifier
-                .scale(Utils().getScale("button"))
-                .padding(30.dp), onClick = {
-                val email = email.value
-                val password = password.value
-                val users = User.getUsers()
-                val userExists = users.any { user ->
-                    user.email == email && user.password == password
-                }
-                if (userExists) {
-                    users.find { it.email == email && it.password == password }?.let {
-                        User.setLoggedUser(it)
+            Button(
+                modifier = Modifier
+                    .scale(Utils().getScale("button"))
+                    .padding(30.dp),
+                onClick = {
+                    val emailValue = email.value
+                    val passwordValue = password.value
+                    val users = User.getUsers()
+                    val userExists = users.any { user ->
+                        user.email == emailValue && user.password == passwordValue
                     }
-                    val intent = Intent(context, ArticleList::class.java)
-                    context.startActivity(intent)
-                } else {
-                    User.setLoggedUser(null)
-                    android.widget.Toast.makeText(
-                        context,
-                        "Correo electrónico o contraseña inválidos.",
-                        android.widget.Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }) {
+                    if (userExists) {
+                        users.find { it.email == emailValue && it.password == passwordValue }?.let {
+                            User.setLoggedUser(it)
+                        }
+                        val intent = Intent(context, ArticleList::class.java)
+                        context.startActivity(intent)
+                    } else {
+                        User.setLoggedUser(null)
+                        android.widget.Toast.makeText(
+                            context,
+                            "Correo electrónico o contraseña inválidos.",
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colors.secondary,
+                    contentColor = colors.white
+                )
+            ) {
                 Text("Iniciar sesión")
             }
-            Text("¿Olvidaste tu contraseña? Haz clic aquí para recuperarla.",
+            Text(
+                "¿Olvidaste tu contraseña? Haz clic aquí para recuperarla.",
                 modifier = Modifier.clickable(onClick = {
                     val intent = Intent(context, HomeActivity::class.java)
                     context.startActivity(intent)
-                })
+                }),
+                color = colors.quinary
             )
         }
     }

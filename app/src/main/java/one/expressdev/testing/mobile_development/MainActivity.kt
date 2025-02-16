@@ -1,55 +1,40 @@
-package one.expressdev.testing.mobile_development
 
+package one.expressdev.testing.mobile_development
 import one.expressdev.testing.mobile_development.rss.ArticleList
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MediumTopAppBar
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallTopAppBar
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import one.expressdev.testing.mobile_development.LoginActivity
+import one.expressdev.testing.mobile_development.SingUpActivity
 import one.expressdev.testing.mobile_development.modelo.User
+import one.expressdev.testing.mobile_development.ui.theme.ColorScheme
 import one.expressdev.testing.mobile_development.ui.theme.Testsmobile_developmentTheme
-import kotlin.reflect.typeOf
+import one.expressdev.testing.mobile_development.R
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        if (User.getLoggedUser() != false) {
+        if (User.getLoggedUser() != null) {
             val intent = Intent(this, ArticleList::class.java)
             startActivity(intent)
             finish()
@@ -61,11 +46,26 @@ class MainActivity : ComponentActivity() {
                 MainMenu()
             }
         }
+        lifecycleScope.launch {
+            User.fetchUsers() // Call the fetchUsers function
+        }
     }
 }
 
+private val colorScheme = ColorScheme()
+
+private val CustomColorPalette = lightColorScheme(
+    primary = colorScheme.primary,
+    onPrimary = colorScheme.white,
+    secondary = colorScheme.secondary,
+    onSecondary = colorScheme.white,
+    background = colorScheme.white,
+    onBackground = Color.Black,
+    surface = colorScheme.white,
+    onSurface = Color.Black,
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
 fun MainMenu() {
     val context = LocalContext.current
@@ -77,15 +77,22 @@ fun MainMenu() {
         topBar = {
             MediumTopAppBar(
                 title = {
-                    Text(
-                        "Menú Principal",
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier
-                            .scale(Utils().getScale("title"))
-                            .padding(start = 30.dp)
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(start = 30.dp)
+                    ) {
+                        Text(
+                            "Menú Principal",
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = CustomColorPalette.onPrimary,
+                            fontSize = 24.sp
+                        )
+                    }
                 },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = CustomColorPalette.primary
+                ),
                 scrollBehavior = scrollBehavior
             )
         }
@@ -94,12 +101,10 @@ fun MainMenu() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            verticalArrangement = Arrangement.Center,
+            verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -107,29 +112,46 @@ fun MainMenu() {
                     onClick = {
                         val intent = Intent(context, SingUpActivity::class.java)
                         context.startActivity(intent)
-                    }, modifier = Modifier
-                        .scale(Utils().getScale("button"))
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = CustomColorPalette.secondary,
+                        contentColor = CustomColorPalette.onSecondary
+                    ),
+                    modifier = Modifier
                         .padding(20.dp)
+                        .height(60.dp)
+                        .fillMaxWidth()
                 ) {
                     Text(
                         "Registrarse",
-                        modifier = Modifier.scale(Utils().getScale("text"))
+                        fontSize = 20.sp
                     )
                 }
                 Button(
                     onClick = {
                         val intent = Intent(context, LoginActivity::class.java)
                         context.startActivity(intent)
-                    }, modifier = Modifier
-                        .scale(Utils().getScale("button"))
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = CustomColorPalette.secondary,
+                        contentColor = CustomColorPalette.onSecondary
+                    ),
+                    modifier = Modifier
                         .padding(20.dp)
+                        .height(60.dp)
+                        .fillMaxWidth()
                 ) {
                     Text(
                         "Iniciar sesión",
-                        modifier = Modifier.scale(Utils().getScale("text"))
+                        fontSize = 20.sp
                     )
                 }
             }
+            Image(
+                painter = painterResource(id = R.drawable.logo),
+                contentDescription = "App Logo",
+                modifier = Modifier.size(180.dp)
+            )
         }
     }
 }
