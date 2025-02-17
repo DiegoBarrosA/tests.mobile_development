@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "99164356861",
+    "firebase_url": "https://inclurss-default-rtdb.firebaseio.com",
+    "project_id": "inclurss",
+    "storage_bucket": "inclurss.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:99164356861:android:4771978ef4bc8ff06c7e94",
+        "android_client_info": {
+          "package_name": "one.expressdev.testing.mobile_development"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHYn4JPGl2Cp4cA0OdXh42biUyU9uDxHc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
