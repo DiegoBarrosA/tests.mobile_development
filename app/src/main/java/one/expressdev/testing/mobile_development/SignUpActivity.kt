@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
@@ -41,13 +42,13 @@ import one.expressdev.testing.mobile_development.modelo.User
 import one.expressdev.testing.mobile_development.ui.theme.Testsmobile_developmentTheme
 import one.expressdev.testing.mobile_development.ui.theme.ColorScheme
 
-class SingUpActivity : ComponentActivity() {
+class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             Testsmobile_developmentTheme {
-                SingUpForm()
+                SignUpForm()
             }
         }
         lifecycleScope.launch {
@@ -59,7 +60,7 @@ class SingUpActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
 @Composable
-fun SingUpForm() {
+fun SignUpForm() {
     val colors = ColorScheme()
     val first_name = remember { mutableStateOf("") }
     val last_name = remember { mutableStateOf("") }
@@ -82,7 +83,8 @@ fun SingUpForm() {
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .scale(Utils().getScale("title"))
-                            .padding(start = 30.dp),
+                            .padding(start = 30.dp)
+                            .testTag("signUpTitle"), // Test tag for title
                         color = colors.white
                     )
                 },
@@ -231,7 +233,8 @@ fun SingUpForm() {
             Button(
                 modifier = Modifier
                     .scale(Utils().getScale("button"))
-                    .padding(30.dp),
+                    .padding(30.dp)
+                    .testTag("registerButton"), // Test tag for button
                 onClick = {
                     if (Utils().isEmailValid(email.value) && (password.value == confirm_password.value) && Utils().validatePassword(password.value).first) {
                         val user = User(java.util.UUID.randomUUID().toString(), first_name.value, last_name.value, email.value, password.value)
@@ -257,3 +260,4 @@ fun SingUpForm() {
         }
     }
 }
+

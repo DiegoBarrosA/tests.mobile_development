@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import one.expressdev.testing.mobile_development.LoginActivity
-import one.expressdev.testing.mobile_development.SingUpActivity
+import one.expressdev.testing.mobile_development.SignUpActivity
 import one.expressdev.testing.mobile_development.modelo.User
 import one.expressdev.testing.mobile_development.ui.theme.ColorScheme
 import one.expressdev.testing.mobile_development.ui.theme.Testsmobile_developmentTheme
@@ -110,7 +110,7 @@ fun MainMenu() {
             ) {
                 Button(
                     onClick = {
-                        val intent = Intent(context, SingUpActivity::class.java)
+                        val intent = Intent(context, SignUpActivity::class.java)
                         context.startActivity(intent)
                     },
                     colors = ButtonDefaults.buttonColors(

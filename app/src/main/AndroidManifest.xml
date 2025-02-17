@@ -33,15 +33,11 @@
             android:label="@string/title_activity_email"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".SingUpActivity"
+            android:name=".SignUpActivity"
             android:exported="false"
             android:label="@string/title_activity_sing_up"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name=".ui.theme.SingUpActivity"
-            android:exported="false"
-            android:label="@string/title_activity_sing_up"
-            android:theme="@style/AppTheme" />
+
         <activity
             android:name=".LoginActivity"
             android:exported="false"
